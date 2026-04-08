@@ -963,6 +963,13 @@
       /* Visual blocks first on mobile */
       .sports-layout { direction: ltr; }
       .sports-screen { order: -1; }
+      /* Center-align section content on tablet */
+      .s-label, .s-title, .s-body { text-align: center; }
+      .s-body { margin-left: auto; margin-right: auto; }
+      .features-intro { text-align: center; }
+      .footer-col { text-align: center; }
+      .spiel-title-label { text-align: center; }
+      .spiel-desc { text-align: center; }
     }
 
     /* Mobile */
@@ -1139,7 +1146,7 @@
 
   <!-- ─── TICKER ─── -->
   <div class="ticker-wrap" aria-hidden="true">
-    <div class="ticker-track">
+    <div class="ticker-track" id="cms-ticker-track">
       <span class="ticker-item">Premium Shisha</span><span class="ticker-sep"></span>
       <span class="ticker-item">Live Bundesliga</span><span class="ticker-sep"></span>
       <span class="ticker-item">Champions League</span><span class="ticker-sep"></span>
@@ -1262,11 +1269,11 @@
           <div class="live-dot" aria-hidden="true"></div>
           Live
         </div>
-        <p class="sports-screen-headline">SPORTS BAR</p>
-        <p class="sports-screen-sub">
+        <p class="sports-screen-headline" id="cms-sports-headline">SPORTS BAR</p>
+        <p class="sports-screen-sub" id="cms-sports-subtext">
           Erlebe die Spannung des Sports in der besten Atmosphäre Stuttgarts — mit Shisha und guter Gesellschaft.
         </p>
-        <div class="sports-badges" aria-hidden="true">
+        <div class="sports-badges" aria-hidden="true" id="cms-sports-badges">
           <span class="s-badge">Bundesliga</span>
           <span class="s-badge">Champions League</span>
           <span class="s-badge">Premier League</span>
@@ -1586,6 +1593,29 @@
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
     }, { threshold: .08, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+    // ─── CMS: load dynamic content ───
+    fetch('/content.json')
+      .then(r => r.json())
+      .then(data => {
+        if (data.sportsHeadline) {
+          document.getElementById('cms-sports-headline').textContent = data.sportsHeadline;
+        }
+        if (data.sportsSubtext) {
+          document.getElementById('cms-sports-subtext').textContent = data.sportsSubtext;
+        }
+        if (data.sportsBadges && data.sportsBadges.length) {
+          document.getElementById('cms-sports-badges').innerHTML =
+            data.sportsBadges.map(b => `<span class="s-badge">${b}</span>`).join('');
+        }
+        if (data.tickerItems && data.tickerItems.length) {
+          const items = data.tickerItems.map(t =>
+            `<span class="ticker-item">${t}</span><span class="ticker-sep"></span>`
+          ).join('');
+          document.getElementById('cms-ticker-track').innerHTML = items + items;
+        }
+      })
+      .catch(() => {});
   </script>
 </body>
 </html>

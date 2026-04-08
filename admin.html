@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MO'KAAN Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E8C96A;
+      --gold-pale: rgba(201,168,76,.15);
+      --black: #060606;
+      --dark: #0C0C0C;
+      --card: #111111;
+      --text: #FFFFFF;
+      --text-muted: rgba(255,255,255,.65);
+      --border: rgba(201,168,76,.18);
+      --red: #e05252;
+      --green: #52c07a;
+    }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 640px;
+    }
+
+    /* ─── Header ─── */
+    .header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .header-logo {
+      font-size: 11px;
+      letter-spacing: .35em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 300;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+    .header-sub {
+      font-size: 12px;
+      letter-spacing: .12em;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* ─── Login ─── */
+    #login-screen, #cms-screen { display: none; }
+    #login-screen.active, #cms-screen.active { display: block; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 40px;
+    }
+
+    .field { margin-bottom: 24px; }
+    .field label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .field input,
+    .field textarea {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      padding: 14px 16px;
+      outline: none;
+      transition: border-color .2s;
+      resize: vertical;
+    }
+    .field input:focus,
+    .field textarea:focus { border-color: var(--gold); }
+    .field .hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 7px;
+      letter-spacing: .05em;
+    }
+
+    /* ─── Buttons ─── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gold);
+      color: #000;
+      border: none;
+      border-radius: 3px;
+      padding: 14px 28px;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+      width: 100%;
+      justify-content: center;
+    }
+    .btn:hover { background: var(--gold-light); }
+    .btn:active { transform: scale(.98); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      font-size: 10px;
+      padding: 10px 20px;
+      width: auto;
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--text); background: transparent; }
+
+    /* ─── Alert ─── */
+    .alert {
+      padding: 12px 16px;
+      border-radius: 3px;
+      font-size: 13px;
+      letter-spacing: .05em;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .alert.show { display: block; }
+    .alert-error { background: rgba(224,82,82,.12); border: 1px solid rgba(224,82,82,.35); color: var(--red); }
+    .alert-success { background: rgba(82,192,122,.12); border: 1px solid rgba(82,192,122,.35); color: var(--green); }
+
+    /* ─── Section divider ─── */
+    .section-title {
+      font-size: 10px;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin: 36px 0 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ─── Footer row ─── */
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    /* ─── Settings toggle ─── */
+    .settings-toggle {
+      text-align: center;
+      margin-top: 28px;
+    }
+    .settings-toggle a {
+      font-size: 11px;
+      letter-spacing: .12em;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: color .2s, border-color .2s;
+    }
+    .settings-toggle a:hover { color: var(--gold); border-color: var(--gold); }
+
+    #settings-panel { display: none; margin-top: 28px; }
+    #settings-panel.open { display: block; }
+
+    /* ─── Status indicator ─── */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      letter-spacing: .08em;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+    .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+    .status-dot.loading { background: var(--gold); animation: pulse 1s ease infinite; }
+    .status-dot.error { background: var(--red); }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .3; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <p class="header-logo">MO'KAAN</p>
+    <h1>Content Manager</h1>
+    <p class="header-sub">Texte & Events pflegen</p>
+  </div>
+
+  <!-- ─── LOGIN ─── -->
+  <div id="login-screen" class="active">
+    <div class="card">
+      <div id="login-alert" class="alert alert-error">Falsches Passwort.</div>
+      <div class="field">
+        <label>Passwort</label>
+        <input type="password" id="password-input" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn" onclick="doLogin()">Einloggen</button>
+    </div>
+  </div>
+
+  <!-- ─── CMS ─── -->
+  <div id="cms-screen">
+    <div class="status-bar">
+      <div class="status-dot" id="status-dot"></div>
+      <span id="status-text">Inhalt geladen</span>
+    </div>
+
+    <div id="save-alert" class="alert"></div>
+
+    <div class="card">
+
+      <p class="section-title">Sports Screen</p>
+
+      <div class="field">
+        <label>Headline (groß im Screen)</label>
+        <input type="text" id="f-headline" placeholder="z.B. BARCA VS ATLETICO">
+        <p class="hint">Wird groß im Sports-Bildschirm angezeigt — perfekt für das nächste Event.</p>
+      </div>
+
+      <div class="field">
+        <label>Untertext</label>
+        <textarea id="f-subtext" rows="3" placeholder="Kurzer Beschreibungstext..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Badges (eine pro Zeile)</label>
+        <textarea id="f-badges" rows="6" placeholder="Bundesliga&#10;Champions League&#10;Premier League"></textarea>
+        <p class="hint">Jede Zeile = ein Badge im Sports-Screen.</p>
+      </div>
+
+      <p class="section-title">Ticker</p>
+
+      <div class="field">
+        <label>Ticker-Einträge (eine pro Zeile)</label>
+        <textarea id="f-ticker" rows="8" placeholder="Premium Shisha&#10;Live Bundesliga&#10;Champions League"></textarea>
+        <p class="hint">Laufen als animierter Ticker unter dem Hero.</p>
+      </div>
+
+      <div class="row">
+        <button class="btn-outline btn" onclick="doLogout()">Logout</button>
+        <button class="btn" id="save-btn" onclick="doSave()" style="width:auto; padding: 14px 40px;">
+          Speichern &amp; Veröffentlichen
+        </button>
+      </div>
+    </div>
+
+    <div class="settings-toggle">
+      <a onclick="toggleSettings()">GitHub-Einstellungen</a>
+    </div>
+
+    <div id="settings-panel">
+      <div class="card">
+        <p class="section-title">GitHub Verbindung</p>
+        <div class="field">
+          <label>Personal Access Token</label>
+          <input type="password" id="f-token" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
+          <p class="hint">
+            Token mit <strong>repo</strong>-Rechten. Einmalig eingeben — wird im Browser gespeichert.
+            Erstellen unter: github.com → Settings → Developer settings → Personal access tokens
+          </p>
+        </div>
+        <div class="field">
+          <label>Repository</label>
+          <input type="text" id="f-repo" placeholder="8bamo/mokaan">
+          <p class="hint">Format: besitzer/repo-name</p>
+        </div>
+        <button class="btn" onclick="saveSettings()">Einstellungen speichern</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const ADMIN_PASSWORD = 'mokaan2026';
+  const DEFAULT_REPO   = '8bamo/mokaan';
+  const CONTENT_PATH   = 'content.json';
+
+  // ─── Login ───
+  function doLogin() {
+    const pw = document.getElementById('password-input').value;
+    if (pw === ADMIN_PASSWORD) {
+      document.getElementById('login-screen').classList.remove('active');
+      document.getElementById('cms-screen').classList.add('active');
+      loadContent();
+    } else {
+      document.getElementById('login-alert').classList.add('show');
+    }
+  }
+
+  document.getElementById('password-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  function doLogout() {
+    document.getElementById('cms-screen').classList.remove('active');
+    document.getElementById('login-screen').classList.add('active');
+    document.getElementById('password-input').value = '';
+  }
+
+  // ─── Settings ───
+  function toggleSettings() {
+    document.getElementById('settings-panel').classList.toggle('open');
+  }
+
+  function saveSettings() {
+    const token = document.getElementById('f-token').value.trim();
+    const repo  = document.getElementById('f-repo').value.trim();
+    if (token) localStorage.setItem('gh_token', token);
+    if (repo)  localStorage.setItem('gh_repo', repo);
+    showAlert('Einstellungen gespeichert.', 'success');
+  }
+
+  function getToken() { return localStorage.getItem('gh_token') || ''; }
+  function getRepo()  { return localStorage.getItem('gh_repo')  || DEFAULT_REPO; }
+
+  // ─── Load content ───
+  function setStatus(state, text) {
+    const dot = document.getElementById('status-dot');
+    dot.className = 'status-dot' + (state !== 'ok' ? ' ' + state : '');
+    document.getElementById('status-text').textContent = text;
+  }
+
+  function loadContent() {
+    setStatus('loading', 'Lade Inhalt...');
+    // Load settings into fields
+    document.getElementById('f-token').value = getToken();
+    document.getElementById('f-repo').value  = getRepo();
+
+    fetch('/content.json?t=' + Date.now())
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById('f-headline').value = data.sportsHeadline || '';
+        document.getElementById('f-subtext').value  = data.sportsSubtext  || '';
+        document.getElementById('f-badges').value   = (data.sportsBadges  || []).join('\n');
+        document.getElementById('f-ticker').value   = (data.tickerItems   || []).join('\n');
+        setStatus('ok', 'Inhalt geladen');
+      })
+      .catch(() => {
+        setStatus('error', 'Fehler beim Laden');
+      });
+  }
+
+  // ─── Save ───
+  function doSave() {
+    const token = getToken();
+    if (!token) {
+      showAlert('Bitte zuerst einen GitHub Token in den Einstellungen eintragen.', 'error');
+      document.getElementById('settings-panel').classList.add('open');
+      return;
+    }
+
+    const newContent = {
+      sportsHeadline: document.getElementById('f-headline').value.trim(),
+      sportsSubtext:  document.getElementById('f-subtext').value.trim(),
+      sportsBadges:   document.getElementById('f-badges').value.split('\n').map(s => s.trim()).filter(Boolean),
+      tickerItems:    document.getElementById('f-ticker').value.split('\n').map(s => s.trim()).filter(Boolean)
+    };
+
+    const repo    = getRepo();
+    const apiBase = `https://api.github.com/repos/${repo}/contents/${CONTENT_PATH}`;
+    const btn     = document.getElementById('save-btn');
+    btn.disabled  = true;
+    btn.textContent = 'Wird gespeichert...';
+    setStatus('loading', 'Verbinde mit GitHub...');
+
+    // 1. Get current SHA
+    fetch(apiBase, {
+      headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' }
+    })
+    .then(r => { if (!r.ok) throw new Error('GitHub API Fehler: ' + r.status); return r.json(); })
+    .then(file => {
+      const sha     = file.sha;
+      const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(newContent, null, 2) + '\n')));
+
+      // 2. Commit updated file
+      return fetch(apiBase, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'CMS: update content.json',
+          content: encoded,
+          sha: sha
+        })
+      });
+    })
+    .then(r => { if (!r.ok) throw new Error('Commit fehlgeschlagen: ' + r.status); return r.json(); })
+    .then(() => {
+      setStatus('ok', 'Gespeichert — Vercel deployt jetzt');
+      showAlert('Gespeichert! Die Website wird in ~30 Sekunden aktualisiert.', 'success');
+    })
+    .catch(err => {
+      setStatus('error', 'Fehler beim Speichern');
+      showAlert('Fehler: ' + err.message + ' — Token korrekt?', 'error');
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.textContent = 'Speichern & Veröffentlichen';
+    });
+  }
+
+  function showAlert(msg, type) {
+    const el = document.getElementById('save-alert');
+    el.textContent = msg;
+    el.className = `alert alert-${type} show`;
+    setTimeout(() => el.classList.remove('show'), 6000);
+  }
+</script>
+</body>
+</html>
