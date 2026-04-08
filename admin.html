@@ -146,6 +146,9 @@
       <span id="status-text">Inhalt geladen</span>
     </div>
     <div id="save-alert" class="alert"></div>
+    <div style="margin-bottom:16px;text-align:right">
+      <a href="/" target="_blank" style="font-size:11px;letter-spacing:.14em;color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold-dim);padding-bottom:2px;">Website öffnen →</a>
+    </div>
 
     <div class="card">
 
@@ -253,8 +256,18 @@
     renderEvents();
   }
 
+  function collectEvents() {
+    return Array.from(document.querySelectorAll('.event-entry')).map(e => ({
+      title: (e.querySelector('[data-f="title"]')?.value || '').trim(),
+      date:  (e.querySelector('[data-f="date"]')?.value  || '').trim(),
+      text:  (e.querySelector('[data-f="text"]')?.value  || '').trim(),
+      image: (e.querySelector('[data-f="image"]')?.value || '').trim()
+    }));
+  }
+
   function removeEvent(i) {
-    eventsData.splice(i,1);
+    eventsData = collectEvents();
+    eventsData.splice(i, 1);
     renderEvents();
   }
 
@@ -265,7 +278,7 @@
       return;
     }
     list.innerHTML = eventsData.map((ev,i) => `
-      <div class="event-entry" id="ev-${i}">
+      <div class="event-entry">
         <div class="event-entry-header">
           <span class="event-entry-num">Event ${i+1}</span>
           <button class="btn btn-danger" onclick="removeEvent(${i})">Löschen</button>
@@ -273,20 +286,20 @@
         <div class="field-row">
           <div class="field">
             <label>Titel</label>
-            <input type="text" placeholder="Barca vs Atletico" value="${esc(ev.title)}" oninput="eventsData[${i}].title=this.value">
+            <input type="text" data-f="title" placeholder="Barca vs Atletico" value="${esc(ev.title)}">
           </div>
           <div class="field">
             <label>Datum / Zeit</label>
-            <input type="text" placeholder="Di · 22. Apr · 21:00" value="${esc(ev.date)}" oninput="eventsData[${i}].date=this.value">
+            <input type="text" data-f="date" placeholder="Di · 22. Apr · 21:00" value="${esc(ev.date)}">
           </div>
         </div>
         <div class="field" style="margin-top:12px">
           <label>Beschreibung</label>
-          <textarea rows="2" placeholder="Kurzer Text zum Event..." oninput="eventsData[${i}].text=this.value">${esc(ev.text)}</textarea>
+          <textarea data-f="text" rows="2" placeholder="Kurzer Text zum Event...">${esc(ev.text)}</textarea>
         </div>
         <div class="field">
           <label>Bild-URL (optional)</label>
-          <input type="url" placeholder="https://..." value="${esc(ev.image)}" oninput="eventsData[${i}].image=this.value">
+          <input type="url" data-f="image" placeholder="https://..." value="${esc(ev.image)}">
           <p class="hint">Direktlink zu einem Bild. Leer lassen für Platzhalter.</p>
         </div>
       </div>`).join('');
@@ -336,7 +349,7 @@
       sportsSubtext:  document.getElementById('f-subtext').value.trim(),
       sportsBadges:   document.getElementById('f-badges').value.split('\n').map(s=>s.trim()).filter(Boolean),
       tickerItems:    document.getElementById('f-ticker').value.split('\n').map(s=>s.trim()).filter(Boolean),
-      events:         eventsData,
+      events:         collectEvents(),
       openingHours:   hoursData
     };
 
@@ -352,8 +365,7 @@
       .then(r => r.json())
       .then(data => {
         if (data.ok) {
-          setStatus('ok', 'Gespeichert — Vercel deployt jetzt');
-          showAlert('Gespeichert! Die Website wird in ~30 Sekunden aktualisiert.', 'success');
+          startReloadCountdown();
         } else {
           throw new Error(data.error || 'Unbekannter Fehler');
         }
@@ -363,6 +375,21 @@
         showAlert('Fehler: ' + err.message, 'error');
       })
       .finally(() => { btn.disabled = false; btn.textContent = 'Speichern & Veröffentlichen'; });
+  }
+
+  function startReloadCountdown() {
+    let secs = 35;
+    setStatus('loading', `Vercel deployt — lädt in ${secs}s neu`);
+    showAlert(`Gespeichert! Seite lädt in ${secs} Sekunden neu.`, 'success');
+    const iv = setInterval(() => {
+      secs--;
+      setStatus('loading', `Vercel deployt — lädt in ${secs}s neu`);
+      if (secs <= 0) {
+        clearInterval(iv);
+        loadContent();
+        setStatus('ok', 'Inhalt aktualisiert');
+      }
+    }, 1000);
   }
 
   function showAlert(msg,type) {
