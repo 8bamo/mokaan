@@ -863,6 +863,86 @@
       color: rgba(255,255,255,.4); margin-top: 24px;
     }
 
+    /* ── Events ── */
+    #events { border-top: 1px solid var(--border); }
+    .events-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2px; margin-top: 56px;
+    }
+    .event-card {
+      background: var(--card); overflow: hidden;
+      border: 1px solid var(--border);
+      transition: border-color .35s;
+    }
+    .event-card:hover { border-color: var(--border-bright); }
+    .event-img-wrap { overflow: hidden; position: relative; }
+    .event-img {
+      width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block;
+      filter: brightness(.82) saturate(.85);
+      transition: transform .6s cubic-bezier(.4,0,.2,1), filter .4s;
+    }
+    .event-card:hover .event-img { transform: scale(1.05); filter: brightness(.95) saturate(1.05); }
+    .event-img-placeholder {
+      aspect-ratio: 16/9;
+      background: linear-gradient(145deg, #141414 0%, #1e1e1e 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; color: rgba(201,168,76,.18);
+    }
+    .event-body { padding: 22px 24px 26px; }
+    .event-date {
+      display: inline-block; font-size: 9px; letter-spacing: .22em;
+      text-transform: uppercase; color: var(--gold);
+      border: 1px solid var(--gold-dim); padding: 5px 12px;
+      border-radius: 1px; margin-bottom: 12px;
+    }
+    .event-title {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 16px; font-weight: 400; letter-spacing: .07em;
+      color: var(--text); line-height: 1.35; margin-bottom: 8px;
+    }
+    .event-text {
+      font-size: 13px; color: var(--text-muted);
+      line-height: 1.7; font-weight: 300;
+    }
+    .events-empty {
+      grid-column: 1 / -1; text-align: center; padding: 80px 20px;
+      color: var(--text-muted); font-size: 13px; letter-spacing: .15em;
+    }
+
+    /* ── Open Status Badge ── */
+    .open-badge {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--text-muted); padding: 5px 12px;
+      border: 1px solid rgba(255,255,255,.1); border-radius: 20px;
+      white-space: nowrap; transition: all .4s;
+    }
+    .open-badge.open   { color: #52c07a; border-color: rgba(82,192,122,.3); }
+    .open-badge.closing{ color: #E8A84C; border-color: rgba(232,168,76,.3); }
+    .open-badge.closed { color: rgba(255,255,255,.3); }
+    .open-badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      flex-shrink: 0; background: currentColor;
+    }
+    .open-badge.open .open-badge-dot { animation: livePulse 1.6s ease-in-out infinite; }
+
+    /* ── Hours Table ── */
+    .hours-block { margin-top: 44px; }
+    .hours-table {
+      display: inline-grid; grid-template-columns: 1fr auto;
+      gap: 0; border: 1px solid var(--border);
+      text-align: left; min-width: 300px;
+    }
+    .hours-day, .hours-time {
+      padding: 9px 18px; font-size: 11px; letter-spacing: .1em;
+      border-bottom: 1px solid var(--border);
+    }
+    .hours-day { color: var(--text-muted); text-transform: uppercase; }
+    .hours-time { color: var(--text); text-align: right; white-space: nowrap; }
+    .hours-today .hours-day,
+    .hours-today .hours-time { color: var(--gold); font-weight: 400; }
+    .hours-table > :nth-last-child(-n+2) { border-bottom: none; }
+
     /* ── Hamburger ── */
     .nav-hamburger {
       display: none;
@@ -954,6 +1034,7 @@
       #reservierung { padding: 80px 32px; }
       footer { padding: 64px 32px 32px; }
       .sports-layout, .shisha-layout, .spiel-layout { grid-template-columns: 1fr; gap: 48px; }
+      .events-grid { grid-template-columns: 1fr 1fr; }
       .features-grid { grid-template-columns: 1fr 1fr; }
       .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
       .features-intro { flex-direction: column; gap: 20px; }
@@ -1021,6 +1102,7 @@
       .res-address { font-size: 10px; letter-spacing: .18em; margin-top: 32px; }
 
       .galerie-grid { grid-template-columns: 1fr; }
+      .events-grid { grid-template-columns: 1fr; }
       #bewertungen { padding: 72px 24px; }
       .galerie-grid { grid-template-columns: 1fr; }
       .footer-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -1084,9 +1166,11 @@
            onerror="this.style.display='none';document.getElementById('navLogoText').style.display='block'">
       <span class="nav-logo-fallback" id="navLogoText" style="display:none">MO'KAAN</span>
     </a>
+    <div class="open-badge" id="open-badge" style="display:none"></div>
     <ul class="nav-links">
       <li><a href="#shisha">Shisha</a></li>
       <li><a href="#sports">Sports</a></li>
+      <li><a href="#events">Events</a></li>
       <li><a href="#spieletisch">Spieletisch</a></li>
       <li><a href="#reservierung">Reservierung</a></li>
       <li><a href="#bewertungen">Bewertung</a></li>
@@ -1102,6 +1186,7 @@
     <ul class="mobile-nav-links">
       <li><a href="#shisha" class="mobile-nav-link">Shisha</a></li>
       <li><a href="#sports" class="mobile-nav-link">Sports</a></li>
+      <li><a href="#events" class="mobile-nav-link">Events</a></li>
       <li><a href="#spieletisch" class="mobile-nav-link">Spieletisch</a></li>
       <li><a href="#reservierung" class="mobile-nav-link">Reservierung</a></li>
       <li><a href="#bewertungen" class="mobile-nav-link">Bewertung</a></li>
@@ -1285,6 +1370,16 @@
     </div>
   </section>
 
+  <!-- ─── EVENTS ─── -->
+  <section id="events" aria-label="Events & Spielplan">
+    <p class="s-label reveal">Spielplan</p>
+    <h2 class="s-title reveal d1">Events &<br>Highlights</h2>
+    <p class="s-body reveal d2">Die nächsten Highlights — live bei MO'KAAN.</p>
+    <div class="events-grid" id="cms-events-grid">
+      <div class="events-empty">Keine Events eingetragen.</div>
+    </div>
+  </section>
+
   <!-- ─── SHISHA ─── -->
   <section id="shisha" aria-label="Premium Shisha">
     <div class="shisha-layout">
@@ -1398,6 +1493,10 @@
       </div>
 
       <p class="res-address" aria-label="Adresse">Göppinger Straße 25 · 70329 Stuttgart · Home of Shisha</p>
+
+      <div class="hours-block">
+        <div class="hours-table" id="hours-table"></div>
+      </div>
     </div>
   </section>
 
@@ -1594,6 +1693,85 @@
     }, { threshold: .08, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
+    // ─── Opening hours helpers ───
+    function toMins(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
+
+    function computeOpenStatus(hours) {
+      if (!hours || !hours.length) return null;
+      const berlinNow = new Date(new Date().toLocaleString('en-US', {timeZone:'Europe/Berlin'}));
+      const jsDay  = berlinNow.getDay();
+      const dayIdx = jsDay === 0 ? 6 : jsDay - 1; // 0=Mon…6=Sun
+      const nowMins = berlinNow.getHours()*60 + berlinNow.getMinutes();
+
+      function isOpenOn(idx, minsToCheck) {
+        const h = hours[idx];
+        if (!h || h.closed) return null;
+        const openM  = toMins(h.open);
+        let   closeM = toMins(h.close);
+        if (closeM <= openM) closeM += 1440;
+        const m = minsToCheck !== undefined ? minsToCheck : nowMins;
+        if (m >= openM && m < closeM) return { remaining: closeM - m, closeTime: h.close };
+        return null;
+      }
+
+      // check today
+      let r = isOpenOn(dayIdx);
+      if (r) return { open:true, ...r };
+
+      // check yesterday past midnight
+      const yIdx   = (dayIdx+6)%7;
+      const yHours = hours[yIdx];
+      if (yHours && !yHours.closed) {
+        const closeM = toMins(yHours.close);
+        if (closeM < 360 && nowMins < closeM)
+          return { open:true, remaining: closeM-nowMins, closeTime: yHours.close };
+      }
+
+      // find next open day
+      const names = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+      for (let i=1; i<=7; i++) {
+        const ni = (dayIdx+i)%7;
+        if (hours[ni] && !hours[ni].closed)
+          return { open:false, nextLabel: i===1?'Heute':i===2?'Morgen':names[ni], nextTime: hours[ni].open };
+      }
+      return { open:false };
+    }
+
+    function updateOpenBadge(hours) {
+      const badge = document.getElementById('open-badge');
+      if (!badge) return;
+      const s = computeOpenStatus(hours);
+      if (!s) return;
+      let cls, text;
+      if (s.open) {
+        if (s.remaining <= 30) {
+          cls='closing'; text=`Schließt in ${s.remaining} Min`;
+        } else {
+          cls='open'; text=`Geöffnet · bis ${s.closeTime} Uhr`;
+        }
+      } else {
+        cls='closed';
+        text = s.nextLabel ? `Geschlossen · ${s.nextLabel} ab ${s.nextTime}` : 'Geschlossen';
+      }
+      badge.className=`open-badge ${cls}`;
+      badge.innerHTML=`<span class="open-badge-dot"></span>${text}`;
+      badge.style.display='flex';
+      setTimeout(()=>updateOpenBadge(hours), 60000);
+    }
+
+    function renderHoursTable(hours) {
+      const el = document.getElementById('hours-table');
+      if (!el || !hours) return;
+      const berlinNow = new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/Berlin'}));
+      const jsDay  = berlinNow.getDay();
+      const todayIdx = jsDay===0?6:jsDay-1;
+      el.innerHTML = hours.map((h,i) => {
+        const time = h.closed ? 'Geschlossen' : `${h.open} – ${h.close} Uhr`;
+        return `<span class="hours-day${i===todayIdx?' hours-today':''}">${h.day}</span>`
+              +`<span class="hours-time${i===todayIdx?' hours-today':''}">${time}</span>`;
+      }).join('');
+    }
+
     // ─── CMS: load dynamic content ───
     fetch('/content.json')
       .then(r => r.json())
@@ -1613,6 +1791,27 @@
             `<span class="ticker-item">${t}</span><span class="ticker-sep"></span>`
           ).join('');
           document.getElementById('cms-ticker-track').innerHTML = items + items;
+        }
+        const evGrid = document.getElementById('cms-events-grid');
+        if (data.events && data.events.length) {
+          evGrid.innerHTML = data.events.map(ev => `
+            <div class="event-card reveal">
+              <div class="event-img-wrap">
+                ${ev.image
+                  ? `<img class="event-img" src="${ev.image}" alt="${ev.title}" loading="lazy">`
+                  : `<div class="event-img-placeholder">⚽</div>`}
+              </div>
+              <div class="event-body">
+                ${ev.date ? `<span class="event-date">${ev.date}</span>` : ''}
+                <p class="event-title">${ev.title}</p>
+                ${ev.text ? `<p class="event-text">${ev.text}</p>` : ''}
+              </div>
+            </div>`).join('');
+            evGrid.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+        }
+        if (data.openingHours) {
+          updateOpenBadge(data.openingHours);
+          renderHoursTable(data.openingHours);
         }
       })
       .catch(() => {});

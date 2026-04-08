@@ -10,209 +10,124 @@
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
     :root {
-      --gold: #C9A84C;
-      --gold-light: #E8C96A;
-      --gold-pale: rgba(201,168,76,.15);
-      --black: #060606;
-      --dark: #0C0C0C;
-      --card: #111111;
-      --text: #FFFFFF;
-      --text-muted: rgba(255,255,255,.65);
-      --border: rgba(201,168,76,.18);
-      --red: #e05252;
-      --green: #52c07a;
+      --gold: #C9A84C; --gold-light: #E8C96A; --gold-dim: rgba(201,168,76,.25);
+      --black: #060606; --card: #111111; --card2: #161616;
+      --text: #FFFFFF; --text-muted: rgba(255,255,255,.6);
+      --border: rgba(201,168,76,.18); --red: #e05252; --green: #52c07a;
     }
-
     body {
-      background: var(--black);
-      color: var(--text);
-      font-family: 'Josefin Sans', sans-serif;
-      font-weight: 300;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 16px;
+      background: var(--black); color: var(--text);
+      font-family: 'Josefin Sans', sans-serif; font-weight: 300;
+      min-height: 100vh; padding: 40px 16px 80px;
     }
+    .container { width: 100%; max-width: 660px; margin: 0 auto; }
 
-    .container {
-      width: 100%;
-      max-width: 640px;
-    }
+    .header { text-align: center; margin-bottom: 48px; }
+    .header-logo { font-size: 11px; letter-spacing: .35em; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; }
+    .header h1 { font-size: 26px; font-weight: 300; letter-spacing: .15em; text-transform: uppercase; }
+    .header-sub { font-size: 12px; letter-spacing: .1em; color: var(--text-muted); margin-top: 6px; }
 
-    /* ─── Header ─── */
-    .header {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-    .header-logo {
-      font-size: 11px;
-      letter-spacing: .35em;
-      color: var(--gold);
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-    .header h1 {
-      font-size: 28px;
-      font-weight: 300;
-      letter-spacing: .15em;
-      text-transform: uppercase;
-    }
-    .header-sub {
-      font-size: 12px;
-      letter-spacing: .12em;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
-
-    /* ─── Login ─── */
     #login-screen, #cms-screen { display: none; }
     #login-screen.active, #cms-screen.active { display: block; }
 
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 40px;
-    }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 36px; margin-bottom: 16px; }
 
-    .field { margin-bottom: 24px; }
-    .field label {
-      display: block;
-      font-size: 10px;
-      letter-spacing: .22em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 10px;
+    .field { margin-bottom: 22px; }
+    .field label { display: block; font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: 9px; }
+    .field input, .field textarea, .field select {
+      width: 100%; background: rgba(255,255,255,.04); border: 1px solid var(--border);
+      border-radius: 3px; color: var(--text); font-family: 'Josefin Sans', sans-serif;
+      font-size: 14px; font-weight: 300; padding: 12px 14px; outline: none; transition: border-color .2s; resize: vertical;
     }
-    .field input,
-    .field textarea {
-      width: 100%;
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      color: var(--text);
-      font-family: 'Josefin Sans', sans-serif;
-      font-size: 15px;
-      font-weight: 300;
-      padding: 14px 16px;
-      outline: none;
-      transition: border-color .2s;
-      resize: vertical;
-    }
-    .field input:focus,
-    .field textarea:focus { border-color: var(--gold); }
-    .field .hint {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 7px;
-      letter-spacing: .05em;
-    }
+    .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--gold); }
+    .field .hint { font-size: 11px; color: var(--text-muted); margin-top: 6px; letter-spacing: .04em; }
 
-    /* ─── Buttons ─── */
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--gold);
-      color: #000;
-      border: none;
-      border-radius: 3px;
-      padding: 14px 28px;
-      font-family: 'Josefin Sans', sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background .2s, transform .1s;
-      width: 100%;
-      justify-content: center;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      background: var(--gold); color: #000; border: none; border-radius: 3px;
+      padding: 13px 28px; font-family: 'Josefin Sans', sans-serif;
+      font-size: 11px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase;
+      cursor: pointer; transition: background .2s, transform .1s; width: 100%;
     }
     .btn:hover { background: var(--gold-light); }
     .btn:active { transform: scale(.98); }
-    .btn:disabled { opacity: .5; cursor: not-allowed; }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--text-muted);
-      border: 1px solid var(--border);
-      font-size: 10px;
-      padding: 10px 20px;
-      width: auto;
-    }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-sm { padding: 8px 16px; font-size: 10px; width: auto; }
+    .btn-outline { background: transparent; color: var(--text-muted); border: 1px solid var(--border); width: auto; padding: 10px 20px; }
     .btn-outline:hover { border-color: var(--gold); color: var(--text); background: transparent; }
+    .btn-danger { background: transparent; color: var(--red); border: 1px solid rgba(224,82,82,.3); width: auto; padding: 7px 14px; font-size: 10px; }
+    .btn-danger:hover { background: rgba(224,82,82,.08); border-color: var(--red); }
 
-    /* ─── Alert ─── */
-    .alert {
-      padding: 12px 16px;
-      border-radius: 3px;
-      font-size: 13px;
-      letter-spacing: .05em;
-      margin-bottom: 20px;
-      display: none;
-    }
+    .alert { padding: 11px 15px; border-radius: 3px; font-size: 13px; letter-spacing: .04em; margin-bottom: 18px; display: none; }
     .alert.show { display: block; }
-    .alert-error { background: rgba(224,82,82,.12); border: 1px solid rgba(224,82,82,.35); color: var(--red); }
-    .alert-success { background: rgba(82,192,122,.12); border: 1px solid rgba(82,192,122,.35); color: var(--green); }
+    .alert-error   { background: rgba(224,82,82,.1); border: 1px solid rgba(224,82,82,.3); color: var(--red); }
+    .alert-success { background: rgba(82,192,122,.1); border: 1px solid rgba(82,192,122,.3); color: var(--green); }
 
-    /* ─── Section divider ─── */
     .section-title {
-      font-size: 10px;
-      letter-spacing: .25em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin: 36px 0 20px;
-      padding-bottom: 10px;
+      font-size: 10px; letter-spacing: .25em; text-transform: uppercase;
+      color: var(--gold); margin: 32px 0 18px; padding-bottom: 10px;
       border-bottom: 1px solid var(--border);
     }
+    .section-title:first-child { margin-top: 0; }
 
-    /* ─── Footer row ─── */
-    .row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-top: 32px;
-    }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 28px; }
 
-    /* ─── Status indicator ─── */
-    .status-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      letter-spacing: .08em;
-      color: var(--text-muted);
-      margin-bottom: 28px;
-    }
-    .status-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      flex-shrink: 0;
-    }
+    .status-bar { display: flex; align-items: center; gap: 8px; font-size: 11px; letter-spacing: .08em; color: var(--text-muted); margin-bottom: 24px; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
     .status-dot.loading { background: var(--gold); animation: pulse 1s ease infinite; }
-    .status-dot.error { background: var(--red); }
+    .status-dot.error   { background: var(--red); }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: .3; }
+    /* ── Events ── */
+    #events-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+    .event-entry {
+      background: var(--card2); border: 1px solid var(--border);
+      border-radius: 3px; padding: 20px;
     }
+    .event-entry-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .event-entry-num { font-size: 10px; letter-spacing: .2em; color: var(--gold); text-transform: uppercase; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field-row .field { margin-bottom: 0; }
+    .add-btn-wrap { margin-top: 14px; }
+
+    /* ── Hours ── */
+    .hours-grid { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: 3px; overflow: hidden; }
+    .hours-row-edit {
+      display: grid; grid-template-columns: 100px 1fr 1fr 80px;
+      align-items: center; gap: 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .hours-row-edit:last-child { border-bottom: none; }
+    .hours-row-edit.today-row { background: rgba(201,168,76,.05); }
+    .hours-day-label {
+      padding: 10px 14px; font-size: 10px; letter-spacing: .15em;
+      text-transform: uppercase; color: var(--text-muted);
+      border-right: 1px solid var(--border);
+    }
+    .hours-row-edit.today-row .hours-day-label { color: var(--gold); }
+    .hours-time-input {
+      background: transparent; border: none; border-right: 1px solid var(--border);
+      color: var(--text); font-family: 'Josefin Sans', sans-serif;
+      font-size: 13px; padding: 10px 12px; outline: none; width: 100%;
+    }
+    .hours-time-input:focus { background: rgba(201,168,76,.05); }
+    .hours-closed-cell { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 12px; }
+    .hours-closed-cell label { font-size: 10px; letter-spacing: .1em; color: var(--text-muted); text-transform: uppercase; cursor: pointer; }
+    .hours-closed-cell input[type=checkbox] { accent-color: var(--gold); width: 14px; height: 14px; cursor: pointer; }
+
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
   </style>
 </head>
 <body>
-
 <div class="container">
+
   <div class="header">
     <p class="header-logo">MO'KAAN</p>
     <h1>Content Manager</h1>
-    <p class="header-sub">Texte & Events pflegen</p>
+    <p class="header-sub">Texte, Events & Öffnungszeiten</p>
   </div>
 
-  <!-- ─── LOGIN ─── -->
+  <!-- LOGIN -->
   <div id="login-screen" class="active">
     <div class="card">
       <div id="login-alert" class="alert alert-error">Falsches Passwort.</div>
@@ -224,52 +139,58 @@
     </div>
   </div>
 
-  <!-- ─── CMS ─── -->
+  <!-- CMS -->
   <div id="cms-screen">
     <div class="status-bar">
       <div class="status-dot" id="status-dot"></div>
       <span id="status-text">Inhalt geladen</span>
     </div>
-
     <div id="save-alert" class="alert"></div>
 
     <div class="card">
 
+      <!-- Sports Screen -->
       <p class="section-title">Sports Screen</p>
-
       <div class="field">
         <label>Headline (groß im Screen)</label>
         <input type="text" id="f-headline" placeholder="z.B. BARCA VS ATLETICO">
-        <p class="hint">Wird groß im Sports-Bildschirm angezeigt — perfekt für das nächste Event.</p>
+        <p class="hint">Wird groß im Sports-Bildschirm angezeigt.</p>
       </div>
-
       <div class="field">
         <label>Untertext</label>
-        <textarea id="f-subtext" rows="3" placeholder="Kurzer Beschreibungstext..."></textarea>
+        <textarea id="f-subtext" rows="3"></textarea>
       </div>
-
       <div class="field">
         <label>Badges (eine pro Zeile)</label>
-        <textarea id="f-badges" rows="6" placeholder="Bundesliga&#10;Champions League&#10;Premier League"></textarea>
-        <p class="hint">Jede Zeile = ein Badge im Sports-Screen.</p>
+        <textarea id="f-badges" rows="6" placeholder="Bundesliga&#10;Champions League"></textarea>
       </div>
 
+      <!-- Ticker -->
       <p class="section-title">Ticker</p>
-
       <div class="field">
         <label>Ticker-Einträge (eine pro Zeile)</label>
-        <textarea id="f-ticker" rows="8" placeholder="Premium Shisha&#10;Live Bundesliga&#10;Champions League"></textarea>
-        <p class="hint">Laufen als animierter Ticker unter dem Hero.</p>
+        <textarea id="f-ticker" rows="6" placeholder="Premium Shisha&#10;Live Bundesliga"></textarea>
       </div>
+
+      <!-- Events -->
+      <p class="section-title">Events & Spielplan</p>
+      <div id="events-list"></div>
+      <div class="add-btn-wrap">
+        <button class="btn btn-outline btn-sm" onclick="addEvent()">+ Event hinzufügen</button>
+      </div>
+
+      <!-- Opening Hours -->
+      <p class="section-title">Öffnungszeiten</p>
+      <div class="hours-grid" id="hours-grid"></div>
+      <p class="hint" style="margin-top:8px">"Geschlossen" aktivieren für Feiertage oder besondere Tage.</p>
 
       <div class="row">
         <button class="btn-outline btn" onclick="doLogout()">Logout</button>
-        <button class="btn" id="save-btn" onclick="doSave()" style="width:auto; padding: 14px 40px;">
+        <button class="btn" id="save-btn" onclick="doSave()" style="width:auto;padding:13px 36px;">
           Speichern &amp; Veröffentlichen
         </button>
       </div>
     </div>
-
   </div>
 </div>
 
@@ -278,10 +199,12 @@
   const DEFAULT_REPO   = '8bamo/mokaan';
   const CONTENT_PATH   = 'content.json';
 
-  // ─── Login ───
+  let eventsData = [];
+  let hoursData  = [];
+
+  // ── Login ──
   function doLogin() {
-    const pw = document.getElementById('password-input').value;
-    if (pw === ADMIN_PASSWORD) {
+    if (document.getElementById('password-input').value === ADMIN_PASSWORD) {
       document.getElementById('login-screen').classList.remove('active');
       document.getElementById('cms-screen').classList.add('active');
       loadContent();
@@ -289,11 +212,7 @@
       document.getElementById('login-alert').classList.add('show');
     }
   }
-
-  document.getElementById('password-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doLogin();
-  });
-
+  document.getElementById('password-input').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
   function doLogout() {
     document.getElementById('cms-screen').classList.remove('active');
     document.getElementById('login-screen').classList.add('active');
@@ -303,30 +222,119 @@
   function getToken() { return localStorage.getItem('gh_token') || ''; }
   function getRepo()  { return localStorage.getItem('gh_repo')  || DEFAULT_REPO; }
 
-  // ─── Load content ───
-  function setStatus(state, text) {
-    const dot = document.getElementById('status-dot');
-    dot.className = 'status-dot' + (state !== 'ok' ? ' ' + state : '');
-    document.getElementById('status-text').textContent = text;
+  // ── Status ──
+  function setStatus(s, t) {
+    document.getElementById('status-dot').className = 'status-dot' + (s!=='ok'?' '+s:'');
+    document.getElementById('status-text').textContent = t;
   }
 
+  // ── Load ──
   function loadContent() {
-    setStatus('loading', 'Lade Inhalt...');
-    fetch('/content.json?t=' + Date.now())
-      .then(r => r.json())
+    setStatus('loading','Lade Inhalt...');
+    fetch('/content.json?t='+Date.now())
+      .then(r=>r.json())
       .then(data => {
         document.getElementById('f-headline').value = data.sportsHeadline || '';
         document.getElementById('f-subtext').value  = data.sportsSubtext  || '';
-        document.getElementById('f-badges').value   = (data.sportsBadges  || []).join('\n');
-        document.getElementById('f-ticker').value   = (data.tickerItems   || []).join('\n');
-        setStatus('ok', 'Inhalt geladen');
+        document.getElementById('f-badges').value   = (data.sportsBadges||[]).join('\n');
+        document.getElementById('f-ticker').value   = (data.tickerItems  ||[]).join('\n');
+
+        eventsData = data.events || [];
+        renderEvents();
+
+        hoursData = data.openingHours || defaultHours();
+        renderHours();
+
+        setStatus('ok','Inhalt geladen');
       })
-      .catch(() => {
-        setStatus('error', 'Fehler beim Laden');
-      });
+      .catch(() => setStatus('error','Fehler beim Laden'));
   }
 
-  // ─── Save ───
+  // ── Events ──
+  function defaultEvent() { return { title:'', text:'', date:'', image:'' }; }
+
+  function addEvent() {
+    eventsData.push(defaultEvent());
+    renderEvents();
+  }
+
+  function removeEvent(i) {
+    eventsData.splice(i,1);
+    renderEvents();
+  }
+
+  function renderEvents() {
+    const list = document.getElementById('events-list');
+    if (!eventsData.length) {
+      list.innerHTML = '<p style="font-size:12px;color:var(--text-muted);letter-spacing:.1em;padding:8px 0;">Keine Events. Klick "+ Event hinzufügen".</p>';
+      return;
+    }
+    list.innerHTML = eventsData.map((ev,i) => `
+      <div class="event-entry" id="ev-${i}">
+        <div class="event-entry-header">
+          <span class="event-entry-num">Event ${i+1}</span>
+          <button class="btn btn-danger" onclick="removeEvent(${i})">Löschen</button>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Titel</label>
+            <input type="text" placeholder="Barca vs Atletico" value="${esc(ev.title)}" oninput="eventsData[${i}].title=this.value">
+          </div>
+          <div class="field">
+            <label>Datum / Zeit</label>
+            <input type="text" placeholder="Di · 22. Apr · 21:00" value="${esc(ev.date)}" oninput="eventsData[${i}].date=this.value">
+          </div>
+        </div>
+        <div class="field" style="margin-top:12px">
+          <label>Beschreibung</label>
+          <textarea rows="2" placeholder="Kurzer Text zum Event..." oninput="eventsData[${i}].text=this.value">${esc(ev.text)}</textarea>
+        </div>
+        <div class="field">
+          <label>Bild-URL (optional)</label>
+          <input type="url" placeholder="https://..." value="${esc(ev.image)}" oninput="eventsData[${i}].image=this.value">
+          <p class="hint">Direktlink zu einem Bild. Leer lassen für Platzhalter.</p>
+        </div>
+      </div>`).join('');
+  }
+
+  // ── Opening Hours ──
+  function defaultHours() {
+    return [
+      {day:'Montag',    open:'12:00',close:'01:00',closed:false},
+      {day:'Dienstag',  open:'12:00',close:'01:00',closed:false},
+      {day:'Mittwoch',  open:'12:00',close:'01:00',closed:false},
+      {day:'Donnerstag',open:'12:00',close:'01:00',closed:false},
+      {day:'Freitag',   open:'12:00',close:'03:00',closed:false},
+      {day:'Samstag',   open:'12:00',close:'03:00',closed:false},
+      {day:'Sonntag',   open:'12:00',close:'01:00',closed:false}
+    ];
+  }
+
+  function renderHours() {
+    const berlinNow = new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/Berlin'}));
+    const jsDay = berlinNow.getDay();
+    const todayIdx = jsDay===0?6:jsDay-1;
+
+    document.getElementById('hours-grid').innerHTML = hoursData.map((h,i) => `
+      <div class="hours-row-edit${i===todayIdx?' today-row':''}">
+        <span class="hours-day-label">${h.day}</span>
+        <input class="hours-time-input" type="text" placeholder="12:00" value="${esc(h.open)}"
+               oninput="hoursData[${i}].open=this.value" title="Öffnet" ${h.closed?'disabled':''}>
+        <input class="hours-time-input" type="text" placeholder="01:00" value="${esc(h.close)}"
+               oninput="hoursData[${i}].close=this.value" title="Schließt" ${h.closed?'disabled':''}>
+        <div class="hours-closed-cell">
+          <input type="checkbox" id="cl-${i}" ${h.closed?'checked':''} onchange="toggleClosed(${i},this.checked)">
+          <label for="cl-${i}">Zu</label>
+        </div>
+      </div>`).join('');
+  }
+
+  function toggleClosed(i, val) {
+    hoursData[i].closed = val;
+    renderHours();
+  }
+
+  // ── Save ──
   function doSave() {
     let token = getToken();
     if (!token) {
@@ -336,65 +344,51 @@
       token = token.trim();
     }
 
+    // Read hours from DOM (oninput updates hoursData in place)
     const newContent = {
       sportsHeadline: document.getElementById('f-headline').value.trim(),
       sportsSubtext:  document.getElementById('f-subtext').value.trim(),
-      sportsBadges:   document.getElementById('f-badges').value.split('\n').map(s => s.trim()).filter(Boolean),
-      tickerItems:    document.getElementById('f-ticker').value.split('\n').map(s => s.trim()).filter(Boolean)
+      sportsBadges:   document.getElementById('f-badges').value.split('\n').map(s=>s.trim()).filter(Boolean),
+      tickerItems:    document.getElementById('f-ticker').value.split('\n').map(s=>s.trim()).filter(Boolean),
+      events:         eventsData,
+      openingHours:   hoursData
     };
 
     const repo    = getRepo();
     const apiBase = `https://api.github.com/repos/${repo}/contents/${CONTENT_PATH}`;
     const btn     = document.getElementById('save-btn');
-    btn.disabled  = true;
-    btn.textContent = 'Wird gespeichert...';
-    setStatus('loading', 'Verbinde mit GitHub...');
+    btn.disabled  = true; btn.textContent = 'Wird gespeichert...';
+    setStatus('loading','Verbinde mit GitHub...');
 
-    // 1. Get current SHA
-    fetch(apiBase, {
-      headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' }
-    })
-    .then(r => { if (!r.ok) throw new Error('GitHub API Fehler: ' + r.status); return r.json(); })
-    .then(file => {
-      const sha     = file.sha;
-      const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(newContent, null, 2) + '\n')));
-
-      // 2. Commit updated file
-      return fetch(apiBase, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/vnd.github+json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: 'CMS: update content.json',
-          content: encoded,
-          sha: sha
-        })
-      });
-    })
-    .then(r => { if (!r.ok) throw new Error('Commit fehlgeschlagen: ' + r.status); return r.json(); })
-    .then(() => {
-      setStatus('ok', 'Gespeichert — Vercel deployt jetzt');
-      showAlert('Gespeichert! Die Website wird in ~30 Sekunden aktualisiert.', 'success');
-    })
-    .catch(err => {
-      setStatus('error', 'Fehler beim Speichern');
-      showAlert('Fehler: ' + err.message + ' — Token korrekt?', 'error');
-    })
-    .finally(() => {
-      btn.disabled = false;
-      btn.textContent = 'Speichern & Veröffentlichen';
-    });
+    fetch(apiBase, { headers:{'Authorization':`Bearer ${token}`,'Accept':'application/vnd.github+json'} })
+      .then(r => { if(!r.ok) throw new Error('API Fehler: '+r.status); return r.json(); })
+      .then(file => {
+        const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(newContent,null,2)+'\n')));
+        return fetch(apiBase, {
+          method:'PUT',
+          headers:{'Authorization':`Bearer ${token}`,'Accept':'application/vnd.github+json','Content-Type':'application/json'},
+          body: JSON.stringify({ message:'CMS: update content.json', content:encoded, sha:file.sha })
+        });
+      })
+      .then(r => { if(!r.ok) throw new Error('Commit fehlgeschlagen: '+r.status); return r.json(); })
+      .then(() => {
+        setStatus('ok','Gespeichert — Vercel deployt jetzt');
+        showAlert('Gespeichert! Die Website wird in ~30 Sekunden aktualisiert.','success');
+      })
+      .catch(err => {
+        setStatus('error','Fehler');
+        showAlert('Fehler: '+err.message+' — Token korrekt?','error');
+      })
+      .finally(() => { btn.disabled=false; btn.textContent='Speichern & Veröffentlichen'; });
   }
 
-  function showAlert(msg, type) {
+  function showAlert(msg,type) {
     const el = document.getElementById('save-alert');
-    el.textContent = msg;
-    el.className = `alert alert-${type} show`;
-    setTimeout(() => el.classList.remove('show'), 6000);
+    el.textContent=msg; el.className=`alert alert-${type} show`;
+    setTimeout(()=>el.classList.remove('show'),6000);
   }
+
+  function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
 </script>
 </body>
 </html>

@@ -18,5 +18,15 @@
     "Home of Shisha",
     "Süper Lig",
     "Reservierungen per WhatsApp"
+  ],
+  "events": [],
+  "openingHours": [
+    { "day": "Montag",     "open": "12:00", "close": "01:00", "closed": false },
+    { "day": "Dienstag",   "open": "12:00", "close": "01:00", "closed": false },
+    { "day": "Mittwoch",   "open": "12:00", "close": "01:00", "closed": false },
+    { "day": "Donnerstag", "open": "12:00", "close": "01:00", "closed": false },
+    { "day": "Freitag",    "open": "12:00", "close": "03:00", "closed": false },
+    { "day": "Samstag",    "open": "12:00", "close": "03:00", "closed": false },
+    { "day": "Sonntag",    "open": "12:00", "close": "01:00", "closed": false }
   ]
 }
