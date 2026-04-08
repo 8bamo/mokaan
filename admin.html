@@ -73,12 +73,7 @@
 
     .row { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 28px; }
 
-    .status-bar { display: flex; align-items: center; gap: 8px; font-size: 11px; letter-spacing: .08em; color: var(--text-muted); margin-bottom: 24px; }
-    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
-    .status-dot.loading { background: var(--gold); animation: pulse 1s ease infinite; }
-    .status-dot.error   { background: var(--red); }
-
-    /* ── Events ── */
+/* ── Events ── */
     #events-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
     .event-entry {
       background: var(--card2); border: 1px solid var(--border);
@@ -141,10 +136,6 @@
 
   <!-- CMS -->
   <div id="cms-screen">
-    <div class="status-bar">
-      <div class="status-dot" id="status-dot"></div>
-      <span id="status-text">Inhalt geladen</span>
-    </div>
     <div id="save-alert" class="alert"></div>
     <div style="margin-bottom:16px;text-align:right">
       <a href="/" target="_blank" style="font-size:11px;letter-spacing:.14em;color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold-dim);padding-bottom:2px;">Website öffnen →</a>
@@ -220,15 +211,8 @@
     document.getElementById('password-input').value = '';
   }
 
-  // ── Status ──
-  function setStatus(s, t) {
-    document.getElementById('status-dot').className = 'status-dot' + (s!=='ok'?' '+s:'');
-    document.getElementById('status-text').textContent = t;
-  }
-
   // ── Load ──
   function loadContent() {
-    setStatus('loading','Lade Inhalt...');
     fetch('/api/content?t='+Date.now())
       .then(r=>r.json())
       .then(data => {
@@ -243,9 +227,8 @@
         hoursData = data.openingHours || defaultHours();
         renderHours();
 
-        setStatus('ok','Inhalt geladen');
       })
-      .catch(() => setStatus('error','Fehler beim Laden'));
+      .catch(() => {});
   }
 
   // ── Events ──
@@ -376,17 +359,14 @@
         }
       })
       .catch(err => {
-        setStatus('error', 'Fehler');
         showAlert('Fehler: ' + err.message, 'error');
       })
       .finally(() => { btn.disabled = false; btn.textContent = 'Speichern & Veröffentlichen'; });
   }
 
   function startReloadCountdown() {
-    setStatus('loading', 'Speichern...');
     setTimeout(() => {
       loadContent();
-      setStatus('ok', 'Gespeichert & live');
       showAlert('Gespeichert! Änderungen sind sofort live.', 'success');
     }, 800);
   }
