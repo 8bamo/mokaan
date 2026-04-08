@@ -1699,6 +1699,17 @@
     }, { threshold: .08, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
+    // ─── Event date formatter ───
+    function formatEventDate(ev) {
+      if (!ev.date) return ev.time || '';
+      const d = new Date(ev.date + 'T12:00:00');
+      if (isNaN(d)) return ev.date;
+      const days   = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+      const months = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+      const label  = `${days[d.getDay()]} · ${d.getDate()}. ${months[d.getMonth()]}`;
+      return ev.time ? `${label} · ${ev.time} Uhr` : label;
+    }
+
     // ─── Opening hours helpers ───
     function toMins(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
 
@@ -1779,7 +1790,7 @@
     }
 
     // ─── CMS: load dynamic content ───
-    fetch('/content.json')
+    fetch('/api/content')
       .then(r => r.json())
       .then(data => {
         if (data.sportsHeadline) {
@@ -1808,7 +1819,7 @@
                   : `<div class="event-img-placeholder">⚽</div>`}
               </div>
               <div class="event-body">
-                ${ev.date ? `<span class="event-date">${ev.date}</span>` : ''}
+                ${(ev.date||ev.time) ? `<span class="event-date">${formatEventDate(ev)}</span>` : ''}
                 <p class="event-title">${ev.title}</p>
                 ${ev.text ? `<p class="event-text">${ev.text}</p>` : ''}
               </div>

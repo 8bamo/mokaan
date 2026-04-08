@@ -229,7 +229,7 @@
   // ── Load ──
   function loadContent() {
     setStatus('loading','Lade Inhalt...');
-    fetch('/content.json?t='+Date.now())
+    fetch('/api/content?t='+Date.now())
       .then(r=>r.json())
       .then(data => {
         document.getElementById('f-headline').value = data.sportsHeadline || '';
@@ -249,7 +249,7 @@
   }
 
   // ── Events ──
-  function defaultEvent() { return { title:'', text:'', date:'', image:'' }; }
+  function defaultEvent() { return { title:'', date:'', time:'', text:'', image:'' }; }
 
   function addEvent() {
     eventsData.push(defaultEvent());
@@ -260,6 +260,7 @@
     return Array.from(document.querySelectorAll('.event-entry')).map(e => ({
       title: (e.querySelector('[data-f="title"]')?.value || '').trim(),
       date:  (e.querySelector('[data-f="date"]')?.value  || '').trim(),
+      time:  (e.querySelector('[data-f="time"]')?.value  || '').trim(),
       text:  (e.querySelector('[data-f="text"]')?.value  || '').trim(),
       image: (e.querySelector('[data-f="image"]')?.value || '').trim()
     }));
@@ -283,14 +284,18 @@
           <span class="event-entry-num">Event ${i+1}</span>
           <button class="btn btn-danger" onclick="removeEvent(${i})">Löschen</button>
         </div>
+        <div class="field">
+          <label>Titel</label>
+          <input type="text" data-f="title" placeholder="Barca vs Atletico" value="${esc(ev.title)}">
+        </div>
         <div class="field-row">
           <div class="field">
-            <label>Titel</label>
-            <input type="text" data-f="title" placeholder="Barca vs Atletico" value="${esc(ev.title)}">
+            <label>Datum</label>
+            <input type="date" data-f="date" value="${esc(ev.date)}" style="color-scheme:dark">
           </div>
           <div class="field">
-            <label>Datum / Zeit</label>
-            <input type="text" data-f="date" placeholder="Di · 22. Apr · 21:00" value="${esc(ev.date)}">
+            <label>Uhrzeit</label>
+            <input type="time" data-f="time" value="${esc(ev.time||'')}" style="color-scheme:dark">
           </div>
         </div>
         <div class="field" style="margin-top:12px">
@@ -378,18 +383,12 @@
   }
 
   function startReloadCountdown() {
-    let secs = 35;
-    setStatus('loading', `Vercel deployt — lädt in ${secs}s neu`);
-    showAlert(`Gespeichert! Seite lädt in ${secs} Sekunden neu.`, 'success');
-    const iv = setInterval(() => {
-      secs--;
-      setStatus('loading', `Vercel deployt — lädt in ${secs}s neu`);
-      if (secs <= 0) {
-        clearInterval(iv);
-        loadContent();
-        setStatus('ok', 'Inhalt aktualisiert');
-      }
-    }, 1000);
+    setStatus('loading', 'Speichern...');
+    setTimeout(() => {
+      loadContent();
+      setStatus('ok', 'Gespeichert & live');
+      showAlert('Gespeichert! Änderungen sind sofort live.', 'success');
+    }, 800);
   }
 
   function showAlert(msg,type) {
