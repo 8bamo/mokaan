@@ -911,17 +911,23 @@
 
     /* ── Open Status Badge ── */
     .open-badge {
+      position: fixed; left: 0; top: 50%; z-index: 200;
+      transform: translateY(-50%) rotate(-90deg) translateX(-50%);
+      transform-origin: left center;
       display: flex; align-items: center; gap: 7px;
-      font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
-      color: var(--text-muted); padding: 5px 12px;
-      border: 1px solid rgba(255,255,255,.1); border-radius: 20px;
-      white-space: nowrap; transition: all .4s;
+      font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--text-muted); padding: 6px 16px;
+      background: rgba(10,10,10,.85); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 0 0 4px 4px;
+      white-space: nowrap; transition: color .4s, border-color .4s;
+      pointer-events: none;
     }
     .open-badge.open   { color: #52c07a; border-color: rgba(82,192,122,.3); }
     .open-badge.closing{ color: #E8A84C; border-color: rgba(232,168,76,.3); }
-    .open-badge.closed { color: rgba(255,255,255,.3); }
+    .open-badge.closed { color: rgba(255,255,255,.25); }
     .open-badge-dot {
-      width: 6px; height: 6px; border-radius: 50%;
+      width: 5px; height: 5px; border-radius: 50%;
       flex-shrink: 0; background: currentColor;
     }
     .open-badge.open .open-badge-dot { animation: livePulse 1.6s ease-in-out infinite; }
@@ -1157,6 +1163,7 @@
 <body>
 
   <div class="cursor" id="cursor"></div>
+  <div class="open-badge" id="open-badge" style="display:none"></div>
   <div class="cursor-ring" id="cursorRing"></div>
 
   <!-- ─── NAVIGATION ─── -->
@@ -1166,7 +1173,6 @@
            onerror="this.style.display='none';document.getElementById('navLogoText').style.display='block'">
       <span class="nav-logo-fallback" id="navLogoText" style="display:none">MO'KAAN</span>
     </a>
-    <div class="open-badge" id="open-badge" style="display:none"></div>
     <ul class="nav-links">
       <li><a href="#shisha">Shisha</a></li>
       <li><a href="#sports">Sports</a></li>
