@@ -196,8 +196,6 @@
 
 <script>
   const ADMIN_PASSWORD = 'mokaan2026';
-  const DEFAULT_REPO   = '8bamo/mokaan';
-  const CONTENT_PATH   = 'content.json';
 
   let eventsData = [];
   let hoursData  = [];
@@ -218,9 +216,6 @@
     document.getElementById('login-screen').classList.add('active');
     document.getElementById('password-input').value = '';
   }
-
-  function getToken() { return localStorage.getItem('gh_token') || ''; }
-  function getRepo()  { return localStorage.getItem('gh_repo')  || DEFAULT_REPO; }
 
   // ── Status ──
   function setStatus(s, t) {
@@ -336,16 +331,7 @@
 
   // ── Save ──
   function doSave() {
-    let token = getToken();
-    if (!token) {
-      token = prompt('GitHub Personal Access Token (einmalig):');
-      if (!token) return;
-      localStorage.setItem('gh_token', token.trim());
-      token = token.trim();
-    }
-
-    // Read hours from DOM (oninput updates hoursData in place)
-    const newContent = {
+    const content = {
       sportsHeadline: document.getElementById('f-headline').value.trim(),
       sportsSubtext:  document.getElementById('f-subtext').value.trim(),
       sportsBadges:   document.getElementById('f-badges').value.split('\n').map(s=>s.trim()).filter(Boolean),
@@ -354,32 +340,29 @@
       openingHours:   hoursData
     };
 
-    const repo    = getRepo();
-    const apiBase = `https://api.github.com/repos/${repo}/contents/${CONTENT_PATH}`;
-    const btn     = document.getElementById('save-btn');
-    btn.disabled  = true; btn.textContent = 'Wird gespeichert...';
-    setStatus('loading','Verbinde mit GitHub...');
+    const btn = document.getElementById('save-btn');
+    btn.disabled = true; btn.textContent = 'Wird gespeichert...';
+    setStatus('loading', 'Speichern...');
 
-    fetch(apiBase, { headers:{'Authorization':`Bearer ${token}`,'Accept':'application/vnd.github+json'} })
-      .then(r => { if(!r.ok) throw new Error('API Fehler: '+r.status); return r.json(); })
-      .then(file => {
-        const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(newContent,null,2)+'\n')));
-        return fetch(apiBase, {
-          method:'PUT',
-          headers:{'Authorization':`Bearer ${token}`,'Accept':'application/vnd.github+json','Content-Type':'application/json'},
-          body: JSON.stringify({ message:'CMS: update content.json', content:encoded, sha:file.sha })
-        });
-      })
-      .then(r => { if(!r.ok) throw new Error('Commit fehlgeschlagen: '+r.status); return r.json(); })
-      .then(() => {
-        setStatus('ok','Gespeichert — Vercel deployt jetzt');
-        showAlert('Gespeichert! Die Website wird in ~30 Sekunden aktualisiert.','success');
+    fetch('/api/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: ADMIN_PASSWORD, content })
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.ok) {
+          setStatus('ok', 'Gespeichert — Vercel deployt jetzt');
+          showAlert('Gespeichert! Die Website wird in ~30 Sekunden aktualisiert.', 'success');
+        } else {
+          throw new Error(data.error || 'Unbekannter Fehler');
+        }
       })
       .catch(err => {
-        setStatus('error','Fehler');
-        showAlert('Fehler: '+err.message+' — Token korrekt?','error');
+        setStatus('error', 'Fehler');
+        showAlert('Fehler: ' + err.message, 'error');
       })
-      .finally(() => { btn.disabled=false; btn.textContent='Speichern & Veröffentlichen'; });
+      .finally(() => { btn.disabled = false; btn.textContent = 'Speichern & Veröffentlichen'; });
   }
 
   function showAlert(msg,type) {
