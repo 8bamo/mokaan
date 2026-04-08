@@ -178,25 +178,6 @@
       margin-top: 32px;
     }
 
-    /* ─── Settings toggle ─── */
-    .settings-toggle {
-      text-align: center;
-      margin-top: 28px;
-    }
-    .settings-toggle a {
-      font-size: 11px;
-      letter-spacing: .12em;
-      color: var(--text-muted);
-      cursor: pointer;
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: color .2s, border-color .2s;
-    }
-    .settings-toggle a:hover { color: var(--gold); border-color: var(--gold); }
-
-    #settings-panel { display: none; margin-top: 28px; }
-    #settings-panel.open { display: block; }
-
     /* ─── Status indicator ─── */
     .status-bar {
       display: flex;
@@ -289,29 +270,6 @@
       </div>
     </div>
 
-    <div class="settings-toggle">
-      <a onclick="toggleSettings()">GitHub-Einstellungen</a>
-    </div>
-
-    <div id="settings-panel">
-      <div class="card">
-        <p class="section-title">GitHub Verbindung</p>
-        <div class="field">
-          <label>Personal Access Token</label>
-          <input type="password" id="f-token" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
-          <p class="hint">
-            Token mit <strong>repo</strong>-Rechten. Einmalig eingeben — wird im Browser gespeichert.
-            Erstellen unter: github.com → Settings → Developer settings → Personal access tokens
-          </p>
-        </div>
-        <div class="field">
-          <label>Repository</label>
-          <input type="text" id="f-repo" placeholder="8bamo/mokaan">
-          <p class="hint">Format: besitzer/repo-name</p>
-        </div>
-        <button class="btn" onclick="saveSettings()">Einstellungen speichern</button>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -342,19 +300,6 @@
     document.getElementById('password-input').value = '';
   }
 
-  // ─── Settings ───
-  function toggleSettings() {
-    document.getElementById('settings-panel').classList.toggle('open');
-  }
-
-  function saveSettings() {
-    const token = document.getElementById('f-token').value.trim();
-    const repo  = document.getElementById('f-repo').value.trim();
-    if (token) localStorage.setItem('gh_token', token);
-    if (repo)  localStorage.setItem('gh_repo', repo);
-    showAlert('Einstellungen gespeichert.', 'success');
-  }
-
   function getToken() { return localStorage.getItem('gh_token') || ''; }
   function getRepo()  { return localStorage.getItem('gh_repo')  || DEFAULT_REPO; }
 
@@ -367,10 +312,6 @@
 
   function loadContent() {
     setStatus('loading', 'Lade Inhalt...');
-    // Load settings into fields
-    document.getElementById('f-token').value = getToken();
-    document.getElementById('f-repo').value  = getRepo();
-
     fetch('/content.json?t=' + Date.now())
       .then(r => r.json())
       .then(data => {
@@ -387,11 +328,12 @@
 
   // ─── Save ───
   function doSave() {
-    const token = getToken();
+    let token = getToken();
     if (!token) {
-      showAlert('Bitte zuerst einen GitHub Token in den Einstellungen eintragen.', 'error');
-      document.getElementById('settings-panel').classList.add('open');
-      return;
+      token = prompt('GitHub Personal Access Token (einmalig):');
+      if (!token) return;
+      localStorage.setItem('gh_token', token.trim());
+      token = token.trim();
     }
 
     const newContent = {
